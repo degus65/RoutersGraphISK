@@ -1,7 +1,10 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +26,9 @@ public class MainFrame extends JFrame {
     public static final String END = "H";
 
     private static final long serialVersionUID = -436042485570419777L;
+    private static List<Node> colourNodes = new ArrayList<Node>();
+    private static List<Edge> colourEdges = new ArrayList<Edge>();
+    private static int edgesCounter = 0;
     private static Viewer viewer;
     private static ViewPanel view;
     private JPanel buttonPanel = new JPanel();
@@ -42,11 +48,40 @@ public class MainFrame extends JFrame {
     public static void main(String[] args) {
 	GraphDef.exampleGraph(g);
 	GraphDef.exampleGraph(graphTemp);
-	viewer = new Viewer(g, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+	viewer = new Viewer(g, Viewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
+
 	g.addAttribute("ui.stylesheet", style);
 	System.setProperty("org.graphstream.ui.renderer",
 		"org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 	view = viewer.addDefaultView(false);
+	KeyListener keyListener = new KeyListener() {
+
+	    @Override
+	    public void keyPressed(KeyEvent arg0) {
+	    }
+
+	    @Override
+	    public void keyReleased(KeyEvent evt) {
+		if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
+		    if (edgesCounter < colourNodes.size()) {
+			colourNodes.get(edgesCounter).addAttribute("ui.style",
+				"fill-color: blue;");
+		    }
+		    if (edgesCounter < colourEdges.size()) {
+			colourEdges.get(edgesCounter).addAttribute("ui.style",
+				"fill-color: red;");
+		    }
+		    edgesCounter++;
+		}
+
+	    }
+
+	    @Override
+	    public void keyTyped(KeyEvent arg0) {
+	    }
+
+	};
+	view.addKeyListener(keyListener);
 	EventQueue.invokeLater(new Runnable() {
 	    public void run() {
 		try {
@@ -64,27 +99,32 @@ public class MainFrame extends JFrame {
      * Create the frame.
      */
     public MainFrame() {
+	this.setTitle("Algorytmy routingu");
 	getContentPane().setLayout(new BorderLayout());
 	getContentPane().add(view, BorderLayout.CENTER);
 
 	getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
 	JButton btnDistance = new JButton("Wektora odleg³oœci");
+	JButton btnLinkState = new JButton("£¹cze stan");
+
 	btnDistance.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent arg0) {
+		btnDistance.setBackground(Color.GREEN);
+		btnLinkState.setBackground(Color.WHITE);
 		transformGraphIntoDistanceExample();
 		try {
 		    doAlg();
 		} catch (InterruptedException e) {
-		    // TODO Auto-generated catch block
 		    e.printStackTrace();
 		}
 	    }
 	});
 
-	JButton btnLinkState = new JButton("£¹cze stan");
 	btnLinkState.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent e) {
+		btnDistance.setBackground(Color.WHITE);
+		btnLinkState.setBackground(Color.GREEN);
 		transformIntoLaczeStan();
 		try {
 		    doAlg();
@@ -102,7 +142,6 @@ public class MainFrame extends JFrame {
     public static void transformGraphIntoDistanceExample() {
 	for (Edge e : g.getEachEdge()) {
 	    e.setAttribute("length", 1);
-	    e.removeAttribute("label");
 	    e.setAttribute("ui.style", "fill-color: black;");
 	}
 	for (Node n : g)
@@ -128,28 +167,21 @@ public class MainFrame extends JFrame {
     }
 
     public static void doAlg() throws InterruptedException {
+	edgesCounter = 0;
+	colourNodes.clear();
+	colourEdges.clear();
 	Dijkstra dijkstra = new Dijkstra(Dijkstra.Element.EDGE, null, "length");
 
 	dijkstra.init(g);
 	dijkstra.setSource(g.getNode(START));
 	dijkstra.compute();
 
-	List<Node> nodes = new ArrayList<Node>();
-	List<Edge> edges = new ArrayList<Edge>();
-
 	for (Node node : dijkstra.getPathNodes(g.getNode(END))) {
-	    nodes.add(0, node);
+	    colourNodes.add(0, node);
 	}
 
 	for (Edge edge : dijkstra.getPathEdges(g.getNode(END)))
-	    edges.add(0, edge);
+	    colourEdges.add(0, edge);
 
-	for (int i = 0; i < nodes.size(); i++) {
-	    // Thread.sleep(1000);
-	    nodes.get(i).addAttribute("ui.style", "fill-color: blue;");
-	    // Thread.sleep(1000);
-	    if (i < edges.size())
-		edges.get(i).addAttribute("ui.style", "fill-color: red;");
-	}
     }
 }
