@@ -5,11 +5,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.graphstream.algorithm.Dijkstra;
@@ -74,8 +81,10 @@ public class MainFrame extends JFrame {
 
     /**
      * Create the frame.
+     * 
+     * @throws IOException
      */
-    public MainFrame() {
+    public MainFrame() throws IOException {
 	this.setTitle("Algorytmy routingu");
 	getContentPane().setLayout(new BorderLayout());
 	getContentPane().add(view, BorderLayout.CENTER);
@@ -85,6 +94,10 @@ public class MainFrame extends JFrame {
 
 	JButton btnDistance = new JButton("Wektora odleg³oœci");
 	JButton btnLinkState = new JButton("£¹cze stan");
+	BufferedImage buttonIcon = ImageIO.read(new File("info-maly.png"));
+	JButton infoButton = new JButton(new ImageIcon(buttonIcon));
+	infoButton.setBorder(BorderFactory.createEmptyBorder());
+	infoButton.setContentAreaFilled(false);
 
 	btnDistance.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent arg0) {
@@ -113,8 +126,18 @@ public class MainFrame extends JFrame {
 		view.grabFocus();
 	    }
 	});
+
+	infoButton.addActionListener(new ActionListener() {
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+		JOptionPane.showMessageDialog(null, Utils.info);
+
+	    }
+	});
+
 	buttonPanel.add(btnLinkState);
 	buttonPanel.add(btnDistance);
+	buttonPanel.add(infoButton);
 
 	List<JButton> grapghDefsButtons = new ArrayList<>();
 	for (int i = 0; i < Utils.numberOfExamples; i++) {

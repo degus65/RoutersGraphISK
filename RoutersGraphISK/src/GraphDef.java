@@ -8,22 +8,17 @@ public class GraphDef {
 	    15, 3, 4, 8 };
 
     public static void clear(Graph g) {
-	g.clearAttributes();
-	for (Node n : g)
-	    g.removeNode(n);
-	for (Edge e : g.getEachEdge())
-	    g.removeEdge(e);
+	g.clear();
 	setStyleAndBackround(g);
     }
 
     public static void getExampleGraphById(int id, Graph g) {
-	// clear(g);
-	if (id == 1) {
+	clear(g);
+	if (id == 0) {
 	    exampleGraph(g);
+	} else if (id == 1) {
+	    exampleGraph2(g);
 	}
-	// } else if (id == 2) {
-	// exampleGraph2(g);
-	// }
     }
 
     public static void setStyleAndBackround(Graph g) {
@@ -68,32 +63,8 @@ public class GraphDef {
 
     public static void exampleGraph2(Graph g) {
 	g.addNode("A").addAttribute("xy", 0, 1);
-	g.addNode("B").addAttribute("xy", 1, 3);
-	g.addNode("C").addAttribute("xy", 1, 1);
-	g.addNode("D").addAttribute("xy", 1, 0);
-	g.addNode("E").addAttribute("xy", 2, 3);
-	g.addNode("F").addAttribute("xy", 2, 1);
-	g.addNode("G").addAttribute("xy", 2, 0);
 	g.addNode("H").addAttribute("xy", 3, 2);
-	g.addNode("I").addAttribute("xy", 3, 1);
-	g.addNode("J").addAttribute("xy", 0, 2);
-	g.addEdge("AJ", "A", "J").addAttribute("length", 9);
-	g.addEdge("JB", "J", "B").addAttribute("length", 5);
-	g.addEdge("AC", "A", "C").addAttribute("length", 9);
-	g.addEdge("AD", "A", "D").addAttribute("length", 7);
-	g.addEdge("BC", "B", "C").addAttribute("length", 2);
-	g.addEdge("CD", "C", "D").addAttribute("length", 10);
-	g.addEdge("BE", "B", "E").addAttribute("length", 9);
-	g.addEdge("CF", "C", "F").addAttribute("length", 11);
-	g.addEdge("DF", "D", "F").addAttribute("length", 15);
-	g.addEdge("DG", "D", "G").addAttribute("length", 10);
-	g.addEdge("GF", "G", "F").addAttribute("length", 8);
-	// g.addEdge("EF", "E", "F").addAttribute("length", 6);
-	// g.addEdge("EH", "E", "H").addAttribute("length", 5);
-	// g.addEdge("HF", "H", "F").addAttribute("length", 15);
-	// g.addEdge("GI", "G", "I").addAttribute("length", 3);
-	// g.addEdge("IH", "I", "H").addAttribute("length", 4);
-	// g.addEdge("FI", "F", "I").addAttribute("length", 8);
+	g.addEdge("AH", "A", "H").addAttribute("length", 9);
 	for (Node n : g)
 	    n.addAttribute("label", n.getId());
 	for (Edge e : g.getEachEdge())
