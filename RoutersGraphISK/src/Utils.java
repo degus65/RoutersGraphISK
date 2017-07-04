@@ -3,8 +3,8 @@ public class Utils {
 
     public static final int numberOfExamples = 2;
 
-    public static final String START = "A";
-    public static final String END = "H";
+    public static String START = "A";
+    public static String END = "H";
 
     public static final String startColour = "#6CFDE0;";
     public static final String endColour = "#0DCDA6;";

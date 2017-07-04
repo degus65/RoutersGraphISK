@@ -38,6 +38,7 @@ public class MainFrame extends JFrame {
     private JPanel menuPanel = new JPanel();
     private JPanel buttonPanel = new JPanel();
     private static Graph g = new SingleGraph("ISK");
+    private int whichExample = 0;
 
     /**
      * Launch the application.
@@ -130,7 +131,8 @@ public class MainFrame extends JFrame {
 	infoButton.addActionListener(new ActionListener() {
 	    @Override
 	    public void actionPerformed(ActionEvent arg0) {
-		JOptionPane.showMessageDialog(null, Utils.info);
+		JOptionPane.showMessageDialog(null, Utils.info, "Wskazówki",
+			JOptionPane.INFORMATION_MESSAGE);
 
 	    }
 	});
@@ -145,8 +147,8 @@ public class MainFrame extends JFrame {
 	    grapghDefsButtons.add(button);
 	    button.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-		    int id = grapghDefsButtons.indexOf(e.getSource());
-		    GraphDef.getExampleGraphById(id, g);
+		    whichExample = grapghDefsButtons.indexOf(e.getSource());
+		    GraphDef.getExampleGraphById(whichExample, g);
 		}
 	    });
 	    menuPanel.add(button);
